@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>«Новый русский» Попандопуло с IT-уклоном | Persona</title>
+<style>
+  :root {
+    --accent: #b5173a;
+    --accent-bright: #ff5c7c;
+    --accent-soft: #fbeaee;
+    --ink: #17161a;
+    --muted: #5f5d66;
+    --line: #e8e6ea;
+    --bg: #fbfaf9;
+    --card: #ffffff;
+    --dark: #141217;
+    --radius: 20px;
+    --wrap: 1100px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  b, strong { font-weight: 650; }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+  p { margin: 0 0 18px; }
+  .muted { color: var(--muted); }
+  .kicker {
+    color: var(--accent);
+    text-transform: uppercase; letter-spacing: .16em;
+    font-size: 13px; font-weight: 700; margin: 0 0 12px;
+  }
+  h2 {
+    font-size: clamp(30px, 4.2vw, 44px);
+    line-height: 1.1; letter-spacing: -.02em;
+    margin: 0 0 24px;
+  }
+  h3 { font-size: 19px; margin: 0 0 8px; letter-spacing: -.01em; }
+
+  /* ---------- Шапка ---------- */
+  .hero {
+    background:
+      radial-gradient(900px 500px at 85% 20%, rgba(181,23,58,.38), transparent 60%),
+      radial-gradient(700px 400px at 5% 100%, rgba(181,23,58,.2), transparent 60%),
+      var(--dark);
+    color: #fff;
+    padding: 96px 0 92px;
+    overflow: hidden;
+  }
+  .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 64px; align-items: center; }
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .18em;
+    font-size: 13px; font-weight: 600; opacity: .75;
+    margin: 0 0 16px;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 6vw, 70px);
+    line-height: 1.04; letter-spacing: -.03em;
+    margin: 0 0 26px;
+  }
+  .hero h1 span { color: var(--accent-bright); }
+  .hero .lead { max-width: 600px; font-size: clamp(18px, 2.1vw, 20px); opacity: .9; margin: 0 0 30px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .chips li {
+    padding: 7px 14px; border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    font-size: 14px;
+  }
+  .portrait { width: 300px; margin: 0; position: relative; z-index: 0; }
+  .portrait img {
+    width: 300px; height: 320px;
+    object-fit: cover; object-position: 50% 20%;
+    border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,.45);
+  }
+  .portrait::before {
+    content: ""; position: absolute; inset: 18px -18px -18px 18px;
+    border: 2px solid var(--accent); border-radius: 24px; z-index: -1;
+  }
+
+  /* ---------- Чередующиеся блоки: фото + текст ---------- */
+  .chapter { padding: 96px 0; }
+  .chapter + .chapter { border-top: 1px solid var(--line); }
+  .chapter.tint { background: var(--accent-soft); border-top: 0; }
+  .chapter.tint + .chapter { border-top: 0; }
+  .row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 72px; align-items: center;
+  }
+  .row + .row { margin-top: 96px; }
+  .row.flip .media { order: 2; }
+  .media { margin: 0; position: relative; }
+  .frame {
+    border-radius: var(--radius); overflow: hidden;
+    aspect-ratio: 4 / 5; background: #ddd;
+    box-shadow: 0 20px 50px rgba(23,22,26,.12);
+  }
+  .frame img { width: 100%; height: 100%; object-fit: cover; }
+  .tag-on-photo {
+    position: absolute; left: 18px; bottom: 18px;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(20,18,23,.78); color: #fff;
+    font-size: 13px; font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+  .text .big { font-size: 20px; }
+
+  /* Крупный заголовок по центру */
+  .center-head { text-align: center; margin-bottom: 64px; }
+  .center-head .kicker {
+    font-size: clamp(22px, 3.6vw, 44px); font-weight: 800;
+    letter-spacing: .12em; line-height: 1.1;
+    color: var(--ink); margin-bottom: 10px;
+  }
+  .center-head h2 {
+    margin: 0;
+    font-size: clamp(64px, 13vw, 168px);
+    line-height: .95; letter-spacing: .02em;
+    text-transform: uppercase; font-weight: 800;
+    color: var(--accent);
+  }
+  .center-head h2.long { font-size: clamp(44px, 9.5vw, 124px); }
+  .center-head h2.mid { font-size: clamp(36px, 6.4vw, 84px); line-height: 1; }
+  .center-head h2.keepcase { text-transform: none; letter-spacing: -.02em; }
+  .center-head + .center-sub {
+    margin: -44px auto 64px; text-align: center;
+    font-size: clamp(18px, 2.2vw, 22px); color: var(--muted);
+  }
+  .row + .center-head { margin-top: 120px; }
+  .howto-list { max-width: 760px; margin: 0 auto; }
+  .promo {
+    max-width: 820px; margin: -24px auto 56px; padding: 32px 36px;
+    text-align: center; border-radius: var(--radius);
+    background: var(--dark); color: #fff;
+    box-shadow: 0 20px 50px rgba(23,22,26,.18);
+  }
+  .promo p { margin: 0; font-size: 18px; color: rgba(255,255,255,.75); }
+  .promo p b { color: #fff; }
+  .promo .promo-big {
+    margin-top: 8px; color: #fff;
+    font-size: clamp(22px, 3vw, 32px); font-weight: 700;
+    line-height: 1.25; letter-spacing: -.01em;
+  }
+  .promo .promo-big span { color: var(--accent-bright); white-space: nowrap; }
+
+  /* Коллаж Кесси */
+  .collage { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+  .collage .frame:first-child { grid-row: span 2; aspect-ratio: auto; height: 100%; }
+  .collage .frame { aspect-ratio: 1 / 1; }
+
+  /* Полароид «Дачушки» */
+  .polaroid {
+    background: #fff; padding: 16px 16px 0;
+    border-radius: 6px;
+    box-shadow: 0 30px 60px rgba(23,22,26,.18), 0 2px 6px rgba(23,22,26,.08);
+    transform: rotate(2.2deg);
+    max-width: 440px; margin-left: auto;
+  }
+  .polaroid img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 40% 55%; }
+  .polaroid figcaption {
+    text-align: center; padding: 16px 0 18px;
+    font: italic 600 26px/1 Georgia, "Times New Roman", serif;
+    color: var(--accent);
+  }
+  .heart { color: var(--accent); }
+
+  /* Панель с цифрами вместо фото */
+  .stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: rgba(255,255,255,.1);
+    border-radius: var(--radius); overflow: hidden;
+    aspect-ratio: 4 / 5;
+    box-shadow: 0 20px 50px rgba(23,22,26,.2);
+  }
+  .stat { background: var(--dark); color: #fff; padding: 26px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .stat b { font-size: clamp(40px, 5vw, 56px); line-height: 1; letter-spacing: -.03em; }
+  .stat b em { font-style: normal; color: var(--accent-bright); }
+  .stat span { font-size: 14px; color: rgba(255,255,255,.65); margin-top: 8px; }
+
+  .dots { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 10px; }
+  .dots li { position: relative; padding-left: 20px; }
+  .dots li::before {
+    content: ""; position: absolute; left: 0; top: .62em;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* Работа: подробности */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+  .work-detail { margin-top: 80px; }
+  .now-job { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .now-job p { margin: 0; }
+  .timeline { list-style: none; margin: 36px 0 0; padding: 0; }
+  .timeline li {
+    display: grid; grid-template-columns: 150px 1fr; gap: 24px;
+    padding: 22px 0; border-top: 1px solid var(--line);
+  }
+  .timeline li:last-child { border-bottom: 1px solid var(--line); }
+  .timeline .when { font-weight: 700; color: var(--accent); font-size: 15px; }
+  .timeline p { margin: 0; color: var(--muted); font-size: 16px; }
+  .skills { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; padding: 0; list-style: none; }
+  .skills li { padding: 6px 14px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 14px; font-weight: 600; }
+
+  /* Факты */
+  .facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .facts li { padding: 18px 20px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); font-size: 16px; }
+  .facts li b { color: var(--accent); }
+
+  /* ---------- Финал ---------- */
+  .finale {
+    color: #fff; padding: 110px 0;
+    background:
+      radial-gradient(700px 500px at 20% 40%, rgba(181,23,58,.35), transparent 65%),
+      var(--dark);
+  }
+  .finale-photo { aspect-ratio: 3 / 4; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+  .finale-photo img { object-position: 50% 40%; transform: scale(1.06); }
+  blockquote { margin: 0; max-width: 560px; }
+  blockquote p { font-size: clamp(26px, 3.8vw, 40px); line-height: 1.25; letter-spacing: -.02em; font-weight: 600; margin: 0 0 24px; }
+  blockquote p::before { content: "«"; color: var(--accent-bright); }
+  blockquote p::after { content: "»"; color: var(--accent-bright); }
+  blockquote footer { opacity: .85; font-size: 16px; }
+
+  .site-footer { padding: 36px 0 44px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+  .site-footer .sign { font-size: 14px; color: var(--ink); margin-bottom: 10px; }
+
+  /* ---------- Адаптив ---------- */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+    .portrait { order: -1; }
+    .row { grid-template-columns: 1fr; gap: 36px; }
+    .row.flip .media { order: 0; }
+    .row + .row { margin-top: 72px; }
+    .media { max-width: 480px; }
+    .polaroid { margin: 0 auto; }
+  }
+  @media (max-width: 620px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 18px; }
+    .chapter { padding: 72px 0; }
+    .hero { padding: 56px 0 64px; }
+    .portrait, .portrait img { width: 220px; }
+    .portrait img { height: 235px; }
+    .now-job { grid-template-columns: 1fr; }
+    .timeline li { grid-template-columns: 1fr; gap: 6px; }
+    .polaroid { padding: 12px 12px 0; transform: rotate(1.5deg); }
+    .finale { padding: 72px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Persona · Виталий Шаклач · Минск</p>
+      <h1>«Новый русский» Попандопуло <span>с железнодорожным IT-уклоном</span></h1>
+      <p class="lead">В лихие 90-е держал пол авторынка, один вечер был Попандопуло, 14 лет отработал на железной дороге. Сейчас — системный аналитик и тимлид интеграционной команды в bePaid. И папа двух дочек, одна из которых с хвостом.</p>
+      <ul class="chips">
+        <li>Системный анализ</li>
+        <li>Интеграции и API</li>
+        <li>Папа Дачушек</li>
+      </ul>
+    </div>
+    <figure class="portrait">
+      <img src="мои%20фото/я.jpeg" alt="Виталий Шаклач, портрет">
+    </figure>
+  </div>
+</header>
+
+<main>
+
+  <!-- Биография -->
+  <section class="chapter" id="about">
+    <div class="wrap">
+
+      <header class="center-head">
+        <p class="kicker">Глава первая</p>
+        <h2 class="mid">Держал пол авторынка в&nbsp;90-е</h2>
+      </header>
+
+      <div class="row">
+        <figure class="media">
+          <div class="frame"><img src="мои%20фото/Новый%20русский%20в%2090е.png" alt="Виталий в малиновом пиджаке, с золотой цепью, в тёмных очках и казаках" style="object-position:50% 22%"></div>
+          <figcaption class="tag-on-photo">Лихие 90-е</figcaption>
+        </figure>
+        <div class="text">
+          <p class="big">Малиновый пиджак с золотыми пуговицами, цепь толщиной в палец, барсетка под мышкой, тёмные очки и казаки. Переговоры, логистика, управление рисками — всё по-взрослому.</p>
+          <p class="muted">Пиджак и цепь живут в гардеробе до сих пор и достаются по особым случаям — напомнить коллегам, кто тут держал пол авторынка. Казаки — не те, что с шашкой, а сапоги. Обувь человека, который знает, чего хочет.</p>
+        </div>
+      </div>
+
+      <header class="center-head">
+        <p class="kicker">Глава вторая</p>
+        <h2 class="mid">Попандопуло — ровно один раз</h2>
+      </header>
+
+      <div class="row flip">
+        <figure class="media">
+          <div class="frame"><img src="мои%20фото/Попандопула.jpg" alt="Виталий в образе Попандопуло: тельняшка, красные галифе, бинокль, шляпа с пером, на фоне красного занавеса" style="object-position:48% 30%"></div>
+          <figcaption class="tag-on-photo">Один вечер · один образ</figcaption>
+        </figure>
+        <div class="text">
+          <p class="big">Был вечер, где всем велели прийти в костюмах. Я пришёл Попандопуло из «Свадьбы в Малиновке»: тельняшка, красные галифе, бинокль, шляпа с пером и усики.</p>
+          <p class="muted">Сыграл один раз, но образ прилип. «Тю! Шо вы говорите!» до сих пор вырывается само — особенно когда в пятницу вечером приходит «маленькая правка».</p>
+        </div>
+      </div>
+
+      <header class="center-head">
+        <p class="kicker">Глава третья</p>
+        <h2 class="mid">Пыхчу как паровоз в&nbsp;IT</h2>
+      </header>
+
+      <div class="row">
+        <div class="media">
+          <div class="stats">
+            <div class="stat"><b>20<em>+</em></b><span>лет в IT и АСУ</span></div>
+            <div class="stat"><b>14</b><span>лет на железной дороге</span></div>
+            <div class="stat"><b>3</b><span>языка + бизнес и dev</span></div>
+            <div class="stat"><b>2</b><span>дочки, одна с хвостом</span></div>
+          </div>
+        </div>
+        <div class="text">
+          <p class="big">Паровоз — не метафора. Я инженер-экономист по железнодорожному транспорту (БелГУТ, 2002–2008) и 14 лет отработал в БЖД — от инженера до заместителя начальника отдела.</p>
+          <ul class="dots">
+            <li>Внедрил <b>API и мобильное приложение БЖД</b> — если вы покупали билет на поезд через телефон, вы пользовались моей работой</li>
+            <li>Бизнес-аналитик в IBA IT Park и «Розум Системс»</li>
+            <li>С 2022 года — <b>bePaid</b>, с 2023-го тимлид интеграционной команды</li>
+          </ul>
+          <p class="muted">Белорусский и русский — родные, английский — рабочий. А ещё язык бизнеса и язык разработчиков. Самый редкий билингвизм.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Работа подробно -->
+  <section class="chapter" id="work">
+    <div class="wrap">
+      <header class="center-head">
+        <p class="kicker">Чем занимаюсь</p>
+        <h2 class="long keepcase">bePaid</h2>
+      </header>
+      <p class="center-sub">с 2022 года · тимлид интеграционной команды</p>
+      <div class="promo">
+        <p><b>bePaid</b> — это процессинг платежей.</p>
+        <p class="promo-big">Обеспечим приём платежей из любой точки мира — <span>на изи!</span></p>
+      </div>
+
+      <div class="now-job">
+        <article class="card">
+          <h3>Team Lead интеграционной команды</h3>
+          <p class="muted">Заместитель начальника отдела системного анализа, с декабря 2023. Оцениваю, возможна ли интеграция, разбираю чужую API-документацию, тестирую запросы, описываю флоу и маппинг, документирую доработку наших API-методов.</p>
+        </article>
+        <article class="card">
+          <h3>Команда и требования</h3>
+          <p class="muted">Планирую и контролирую работу команды, ввожу в курс дела новичков, пишу требования к функциям и сервисам. До тимлидства — полтора года системным аналитиком.</p>
+        </article>
+      </div>
+      <ul class="timeline">
+        <li>
+          <div class="when">2020 – 2022</div>
+          <div><h3>«Розум Системс» · бизнес-аналитик</h3><p>Функциональные требования и постановки, ТЗ на аутсорс-продукты, документация для сертификации, прототипы в Figma, анализ конкурентов. И наведение порядка в устаревшей документации — кто-то же должен.</p></div>
+        </li>
+        <li>
+          <div class="when">2019 – 2020</div>
+          <div><h3>IBA IT Park · бизнес-аналитик</h3><p>Анализ источников данных, интервью с заинтересованными лицами, требования к ETL-процессам: маппинг, ключи, условия загрузки, чистка, порядок обновления.</p></div>
+        </li>
+        <li>
+          <div class="when">2005 – 2019</div>
+          <div><h3>БЖД, Главный расчётный информационный центр</h3><p>От инженера до <b>заместителя начальника отдела</b> АСУ пассажирскими перевозками. API БЖД для продажи билетов по дистанционным каналам, мобильное приложение, конкурсы на закупку разработки, кураторство подрядчиков, ТЗ и программы испытаний, администрирование Tomcat, JBoss, DB2, MQSeries.</p></div>
+        </li>
+      </ul>
+      <ul class="skills">
+        <li>Бизнес-анализ</li><li>Системный анализ</li><li>Интеграции · API</li><li>SQL</li><li>ETL</li><li>Figma</li><li>Внедрение ПО</li><li>Работа с подрядчиками</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Дочки -->
+  <section class="chapter" id="family">
+    <div class="wrap">
+
+      <header class="center-head">
+        <p class="kicker">Главный проект</p>
+        <h2>Дочка</h2>
+      </header>
+
+      <div class="row flip">
+        <figure class="media">
+          <div class="frame"><img src="мои%20фото/я%20и%20доча%20плачет.jpg" alt="Виталий держит на руках плачущую дочку с жёлтой лопаткой у озера" style="object-position:50% 50%"></div>
+          <figcaption class="tag-on-photo">Эскалация от заказчика</figcaption>
+        </figure>
+        <div class="text">
+          <p class="big">Требования меняются ежедневно, приоритеты пересматриваются без предупреждения, а заказчик умеет эскалировать вопрос громким плачем прямо на берегу озера — с жёлтой лопаткой в руке.</p>
+          <p class="muted">Фото подтверждает инцидент. Требования не были выполнены вовремя — учёл, исправился. Проект успешный, и я горжусь им больше всего. Без дедлайнов, но и без выходных.</p>
+        </div>
+      </div>
+
+      <header class="center-head">
+        <p class="kicker">Вторая дочка · с 2024 года</p>
+        <h2 class="long">Дачушка Кесси</h2>
+      </header>
+
+      <div class="row">
+        <div class="media collage">
+          <div class="frame"><img src="мои%20фото/кесси/кесси%20благородная.jpg" alt="Серая полосатая кошка Кесси гордо стоит на кухонном шкафу" style="object-position:45% 35%"></div>
+          <div class="frame"><img src="мои%20фото/кесси/кесси%20грустит.jpg" alt="Кесси грустно лежит на стуле" style="object-position:55% 55%"></div>
+          <div class="frame"><img src="мои%20фото/кесси/кесси%20крадет%20колбасу.jpg" alt="Кесси тянется лапой к колбасе на разделочной доске" style="object-position:55% 45%"></div>
+        </div>
+        <div class="text">
+          <p class="big">Два года назад у меня появилась вторая дочка. По паспорту — кошка <b>Кесси</b>, по-домашнему — <b>Дачушка</b>.</p>
+          <ul class="dots">
+            <li>Смотрит на мир <b>со шкафа</b> — гордо и благородно, как и положено даме из приличной семьи</li>
+            <li>Умеет <b>грустить на стуле</b> так убедительно, что колбаса находится сама</li>
+            <li>А если не находится — <b>ворует её</b> с разделочной доски с невозмутимым видом. Фото с места преступления прилагается</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Дачушки вместе -->
+  <section class="chapter tint">
+    <div class="wrap">
+      <header class="center-head">
+        <p class="kicker">Лучшая интеграция в моей жизни</p>
+        <h2 class="mid">Две дочки, одна команда</h2>
+      </header>
+
+      <div class="row flip">
+        <figure class="media">
+          <div class="polaroid">
+            <img src="мои%20фото/кесси/Дачушки.jpg" alt="Дочка лежит в обнимку с кошкой Кесси">
+            <figcaption>Дачушки <span class="heart">♥</span></figcaption>
+          </div>
+        </figure>
+        <div class="text">
+          <p class="big">Когда старшая дочка и Кесси ложатся в обнимку, получаются <b>Дачушки</b>. Смотрят на меня так, будто это я тут гость.</p>
+          <p class="muted">Против двоих у меня шансов нет: одна просит внимания, вторая — колбасы, и обе всегда получают своё. Никакого API не нужно — интеграция работает с первого дня.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Как со мной работать -->
+  <section class="chapter" id="howto">
+    <div class="wrap">
+      <header class="center-head">
+        <p class="kicker">Как со мной работать</p>
+        <h2 class="mid">Приходите с задачей</h2>
+      </header>
+      <p class="center-sub">даже если она пока «сделайте, чтобы работало»</p>
+
+      <div class="howto-list">
+        <ul class="facts">
+          <li>Задам много вопросов, разберусь, нарисую <b>флоу</b> и опишу <b>маппинг</b>.</li>
+          <li>Найду, где у интеграции <b>подвох</b>, — до того, как его найдёт прод.</li>
+          <li>Не обещаю, что не скажу <b>«Тю!»</b>, но спецификация будет понятной, а команда будет знать, что делать.</li>
+          <li>Только не звоните в выходные: у меня <b>Дачушки</b>, и они не любят, когда папа отвлекается.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Финал -->
+  <section class="finale">
+    <div class="wrap row">
+      <figure class="media">
+        <div class="frame finale-photo"><img src="мои%20фото/я%20и%20доча.jpg" alt="Виталий с дочкой на руках в парке"></div>
+      </figure>
+      <blockquote>
+        <p>Держал пол авторынка в 90-е, один вечер был Попандопуло, 14 лет — на рельсах. А теперь — аналитик и папа двух дочек.</p>
+        <footer>— Виталий Шаклач. Рад знакомству.</footer>
+      </blockquote>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="sign">Виталий Шаклач · Минск · bePaid</div>
+    Все фотографии — из личного архива Виталия Шаклача.
+  </div>
+</footer>
+
+</body>
+</html>
