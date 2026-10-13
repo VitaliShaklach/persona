@@ -9,14 +9,56 @@
     --accent: #b5173a;
     --accent-bright: #ff5c7c;
     --accent-soft: #fbeaee;
+    --kicker: var(--accent);
     --ink: #17161a;
     --muted: #5f5d66;
     --line: #e8e6ea;
     --bg: #fbfaf9;
     --card: #ffffff;
     --dark: #141217;
+    --on-dark: #ffffff;
+    --glow: rgba(181,23,58,.38);
+    --glow-2: rgba(181,23,58,.2);
+    --polaroid: #ffffff;
+    --nav-bg: rgba(251,250,249,.86);
+    --shadow: rgba(23,22,26,.12);
     --radius: 20px;
     --wrap: 1100px;
+  }
+  /* Тёмная тема */
+  :root:has(#t-dark:checked) {
+    --accent: #ff4d6d;
+    --accent-bright: #ff7a93;
+    --accent-soft: #24131a;
+    --ink: #f2eff3;
+    --muted: #a9a5b0;
+    --line: #2c2930;
+    --bg: #121015;
+    --card: #1c1a20;
+    --dark: #0b0a0d;
+    --polaroid: #2a272e;
+    --nav-bg: rgba(18,16,21,.86);
+    --shadow: rgba(0,0,0,.45);
+    color-scheme: dark;
+  }
+  /* Лихие 90-е */
+  :root:has(#t-90:checked) {
+    --accent: #ff1f8e;
+    --accent-bright: #ffd400;
+    --accent-soft: #2a0f4a;
+    --kicker: #ffd400;
+    --ink: #fff4fb;
+    --muted: #c9b6e4;
+    --line: #3d2266;
+    --bg: #1a0b2e;
+    --card: #251040;
+    --dark: #0f0520;
+    --glow: rgba(255,31,142,.5);
+    --glow-2: rgba(120,40,255,.4);
+    --polaroid: #fff3b0;
+    --nav-bg: rgba(26,11,46,.86);
+    --shadow: rgba(0,0,0,.5);
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -26,14 +68,16 @@
     color: var(--ink);
     font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
+    transition: background-color .3s, color .3s;
   }
   img { display: block; max-width: 100%; }
   b, strong { font-weight: 650; }
+  a { color: var(--accent); }
   .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
   p { margin: 0 0 18px; }
   .muted { color: var(--muted); }
   .kicker {
-    color: var(--accent);
+    color: var(--kicker);
     text-transform: uppercase; letter-spacing: .16em;
     font-size: 13px; font-weight: 700; margin: 0 0 12px;
   }
@@ -43,15 +87,55 @@
     margin: 0 0 24px;
   }
   h3 { font-size: 19px; margin: 0 0 8px; letter-spacing: -.01em; }
+  section[id], header[id] { scroll-margin-top: 64px; }
+
+  /* ---------- Переключатель тем ---------- */
+  .theme-radio { position: absolute; opacity: 0; pointer-events: none; }
+
+  /* ---------- Меню ---------- */
+  .topnav {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topnav-in { display: flex; align-items: center; gap: 18px; height: 56px; }
+  .logo { font-weight: 800; letter-spacing: .04em; color: var(--ink); text-decoration: none; flex: none; }
+  .logo span { color: var(--accent); }
+  .nav-links {
+    display: flex; gap: 4px; list-style: none; margin: 0; padding: 0;
+    flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a {
+    display: block; padding: 6px 12px; border-radius: 999px;
+    color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600; white-space: nowrap;
+    transition: color .2s, background .2s;
+  }
+  .nav-links a:hover { color: var(--accent); background: var(--accent-soft); }
+  .theme-switch { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--accent-soft); flex: none; }
+  .theme-switch label {
+    padding: 4px 10px; border-radius: 999px; cursor: pointer;
+    font-size: 14px; font-weight: 700; color: var(--muted); white-space: nowrap;
+    transition: background .2s, color .2s, transform .2s;
+  }
+  .theme-switch label:hover { transform: translateY(-1px); }
+  :root:not(:has(#t-dark:checked)):not(:has(#t-90:checked)) label[for="t-light"],
+  :root:has(#t-dark:checked) label[for="t-dark"],
+  :root:has(#t-90:checked) label[for="t-90"] { background: var(--card); color: var(--accent); box-shadow: 0 2px 8px var(--shadow); }
+  :root:has(#t-light:focus-visible) label[for="t-light"],
+  :root:has(#t-dark:focus-visible) label[for="t-dark"],
+  :root:has(#t-90:focus-visible) label[for="t-90"] { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* ---------- Шапка ---------- */
   .hero {
+    position: relative;
     background:
-      radial-gradient(900px 500px at 85% 20%, rgba(181,23,58,.38), transparent 60%),
-      radial-gradient(700px 400px at 5% 100%, rgba(181,23,58,.2), transparent 60%),
+      radial-gradient(900px 500px at 85% 20%, var(--glow), transparent 60%),
+      radial-gradient(700px 400px at 5% 100%, var(--glow-2), transparent 60%),
       var(--dark);
-    color: #fff;
-    padding: 96px 0 92px;
+    color: var(--on-dark);
+    padding: 96px 0 132px;
     overflow: hidden;
   }
   .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 64px; align-items: center; }
@@ -73,7 +157,9 @@
     background: rgba(255,255,255,.08);
     border: 1px solid rgba(255,255,255,.18);
     font-size: 14px;
+    transition: transform .25s cubic-bezier(.3,1.6,.5,1), background .2s;
   }
+  .chips li:hover { transform: translateY(-4px) rotate(-2deg); background: rgba(255,255,255,.16); }
   .portrait { width: 300px; margin: 0; position: relative; z-index: 0; }
   .portrait img {
     width: 300px; height: 320px;
@@ -85,6 +171,27 @@
     content: ""; position: absolute; inset: 18px -18px -18px 18px;
     border: 2px solid var(--accent); border-radius: 24px; z-index: -1;
   }
+
+  /* Гуси идут на стендап */
+  .geese { position: absolute; left: 0; right: 0; bottom: 14px; height: 64px; pointer-events: none; }
+  .flock {
+    position: absolute; bottom: 0; left: 0;
+    display: flex; align-items: flex-end; gap: 6px;
+    transform: translateX(24px);
+    animation: march 28s linear infinite;
+  }
+  .flock .goose { width: 52px; height: 52px; animation: waddle .5s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+  .flock .goose:nth-child(2) { width: 46px; height: 46px; animation-delay: -.25s; }
+  .flock .goose:nth-child(3) { width: 40px; height: 40px; animation-delay: -.1s; }
+  .flock .goose:nth-child(4) { width: 36px; height: 36px; animation-delay: -.35s; }
+  .flock .sign {
+    align-self: flex-start; margin-left: 6px;
+    padding: 3px 9px; border-radius: 6px;
+    background: var(--accent); color: #fff;
+    font-size: 12px; font-weight: 700; white-space: nowrap;
+  }
+  @keyframes march { from { transform: translateX(-300px); } to { transform: translateX(100vw); } }
+  @keyframes waddle { from { transform: rotate(-7deg) translateY(0); } to { transform: rotate(7deg) translateY(-3px); } }
 
   /* ---------- Чередующиеся блоки: фото + текст ---------- */
   .chapter { padding: 96px 0; }
@@ -100,8 +207,8 @@
   .media { margin: 0; position: relative; }
   .frame {
     border-radius: var(--radius); overflow: hidden;
-    aspect-ratio: 4 / 5; background: #ddd;
-    box-shadow: 0 20px 50px rgba(23,22,26,.12);
+    aspect-ratio: 4 / 5; background: var(--line);
+    box-shadow: 0 20px 50px var(--shadow);
   }
   .frame img { width: 100%; height: 100%; object-fit: cover; }
   .tag-on-photo {
@@ -112,6 +219,21 @@
     backdrop-filter: blur(4px);
   }
   .text .big { font-size: 20px; }
+
+  /* Пузырь «Тю!» на Попандопуло */
+  .says { cursor: pointer; outline: none; }
+  .says .bubble {
+    position: absolute; top: 22px; right: -10px; z-index: 2;
+    padding: 12px 18px; border-radius: 18px 18px 4px 18px;
+    background: var(--card); color: var(--ink);
+    font-weight: 800; font-size: 20px; line-height: 1.2;
+    box-shadow: 0 14px 30px var(--shadow);
+    transform: scale(0) rotate(-8deg); transform-origin: 90% 100%;
+    transition: transform .3s cubic-bezier(.3,1.6,.5,1);
+  }
+  .says .bubble small { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 4px; }
+  .says:hover .bubble, .says:focus-visible .bubble, .says:focus .bubble { transform: scale(1) rotate(-4deg); }
+  .says:focus-visible .frame { outline: 3px solid var(--accent); outline-offset: 4px; }
 
   /* Крупный заголовок по центру */
   .center-head { text-align: center; margin-bottom: 64px; }
@@ -139,8 +261,9 @@
   .promo {
     max-width: 820px; margin: -24px auto 56px; padding: 32px 36px;
     text-align: center; border-radius: var(--radius);
-    background: var(--dark); color: #fff;
-    box-shadow: 0 20px 50px rgba(23,22,26,.18);
+    background: var(--dark); color: var(--on-dark);
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 50px var(--shadow);
   }
   .promo p { margin: 0; font-size: 18px; color: rgba(255,255,255,.75); }
   .promo p b { color: #fff; }
@@ -155,22 +278,42 @@
   .collage { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
   .collage .frame:first-child { grid-row: span 2; aspect-ratio: auto; height: 100%; }
   .collage .frame { aspect-ratio: 1 / 1; }
+  .guard {
+    position: absolute; right: -10px; bottom: -34px; z-index: 2;
+    display: flex; align-items: flex-end; gap: 4px;
+  }
+  .guard .goose { width: 72px; height: 72px; transform: scaleX(-1); animation: guard 3s ease-in-out infinite; }
+  .guard span {
+    margin-bottom: 52px; padding: 5px 10px; border-radius: 10px;
+    background: var(--card); color: var(--ink); border: 1px solid var(--line);
+    font-size: 12px; font-weight: 700; white-space: nowrap;
+    box-shadow: 0 8px 20px var(--shadow);
+  }
+  @keyframes guard {
+    0%, 70%, 100% { transform: scaleX(-1) rotate(0); }
+    78% { transform: scaleX(-1) rotate(-10deg); }
+    86% { transform: scaleX(-1) rotate(6deg); }
+  }
 
   /* Полароид «Дачушки» */
   .polaroid {
-    background: #fff; padding: 16px 16px 0;
+    background: var(--polaroid); padding: 16px 16px 0;
     border-radius: 6px;
-    box-shadow: 0 30px 60px rgba(23,22,26,.18), 0 2px 6px rgba(23,22,26,.08);
+    box-shadow: 0 30px 60px var(--shadow), 0 2px 6px var(--shadow);
     transform: rotate(2.2deg);
     max-width: 440px; margin-left: auto;
+    transition: transform .4s cubic-bezier(.3,1.6,.5,1);
   }
+  .polaroid:hover { transform: rotate(-1.5deg) scale(1.03); }
   .polaroid img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 40% 55%; }
   .polaroid figcaption {
     text-align: center; padding: 16px 0 18px;
     font: italic 600 26px/1 Georgia, "Times New Roman", serif;
     color: var(--accent);
   }
-  .heart { color: var(--accent); }
+  .heart { color: var(--accent); display: inline-block; }
+  .polaroid:hover .heart { animation: beat .6s ease-in-out infinite; }
+  @keyframes beat { 50% { transform: scale(1.35); } }
 
   /* Панель с цифрами вместо фото */
   .stats {
@@ -178,7 +321,7 @@
     background: rgba(255,255,255,.1);
     border-radius: var(--radius); overflow: hidden;
     aspect-ratio: 4 / 5;
-    box-shadow: 0 20px 50px rgba(23,22,26,.2);
+    box-shadow: 0 20px 50px var(--shadow);
   }
   .stat { background: var(--dark); color: #fff; padding: 26px; display: flex; flex-direction: column; justify-content: flex-end; }
   .stat b { font-size: clamp(40px, 5vw, 56px); line-height: 1; letter-spacing: -.03em; }
@@ -214,11 +357,98 @@
   .facts li { padding: 18px 20px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); font-size: 16px; }
   .facts li b { color: var(--accent); }
 
+  /* Гусь-тестировщик */
+  .qa-goose { display: flex; align-items: center; gap: 18px; max-width: 760px; margin: 28px auto 0; }
+  .qa-goose button {
+    position: relative; flex: none; padding: 0; border: 0; background: none; cursor: pointer;
+  }
+  .qa-goose .goose { width: 84px; height: 84px; transition: transform .2s; }
+  .qa-goose button:hover .goose, .qa-goose button:focus .goose { transform: rotate(-12deg) translateX(6px); }
+  .qa-goose .bubble {
+    position: absolute; left: 70px; top: -26px;
+    padding: 8px 12px; border-radius: 14px 14px 14px 4px;
+    background: var(--accent); color: #fff; font-weight: 800; font-size: 15px; white-space: nowrap;
+    transform: scale(0); transform-origin: 0 100%;
+    transition: transform .25s cubic-bezier(.3,1.6,.5,1);
+  }
+  .qa-goose button:hover .bubble, .qa-goose button:focus .bubble { transform: scale(1); }
+  .qa-goose button:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 12px; }
+  .qa-goose p { margin: 0; font-size: 15px; }
+
+  /* ---------- Досье ---------- */
+  .dossier { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .secret {
+    position: relative; overflow: hidden;
+    background: var(--card); border: 1px dashed var(--accent); border-radius: 16px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .secret:hover { transform: translateY(-3px); box-shadow: 0 14px 30px var(--shadow); }
+  .secret summary {
+    list-style: none; cursor: pointer; padding: 20px 22px;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 700;
+  }
+  .secret summary::-webkit-details-marker { display: none; }
+  .secret summary::before { content: "🔒"; font-size: 22px; }
+  .secret[open] summary::before { content: "🔓"; }
+  .secret summary small { display: block; font-weight: 600; color: var(--muted); font-size: 13px; }
+  .secret summary:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; border-radius: 16px; }
+  .secret p { margin: 0; padding: 0 22px 22px; font-size: 16px; animation: reveal .35s ease-out; }
+  .secret[open] { border-style: solid; }
+  .secret[open]::after {
+    content: "Рассекречено"; position: absolute; right: 12px; top: 14px;
+    padding: 2px 8px; border: 2px solid var(--accent); border-radius: 6px;
+    color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    transform: rotate(8deg); animation: stamp .3s cubic-bezier(.3,1.6,.5,1);
+  }
+  @keyframes reveal { from { opacity: 0; transform: translateY(-6px); } }
+  @keyframes stamp { from { opacity: 0; transform: rotate(8deg) scale(2.2); } }
+
+  /* ---------- Ван Дамм ---------- */
+  .stage {
+    color: var(--on-dark); overflow-x: clip;
+    background:
+      radial-gradient(600px 400px at 15% 30%, var(--glow), transparent 65%),
+      radial-gradient(500px 400px at 90% 80%, var(--glow-2), transparent 65%),
+      var(--dark);
+  }
+  .chapter.stage + .chapter { border-top: 0; }
+  .stage .center-head .kicker { color: rgba(255,255,255,.85); }
+  .stage .center-head h2 { color: var(--accent-bright); }
+  .stage .center-head + .center-sub { color: rgba(255,255,255,.65); }
+  .stage .muted { color: rgba(255,255,255,.65); }
+  .stage .dots li::before { background: var(--accent-bright); }
+  .vd-frame { aspect-ratio: 1 / 1; background: #000; box-shadow: 0 0 0 4px var(--accent), 0 30px 70px rgba(0,0,0,.5); }
+  .vd-stage.is-spin .vd-frame { animation: shake .35s linear 3; }
+  .vd-stage.is-spin .vd-frame img { transform: scale(1.2); transform-origin: 50% 25%; } /* прячем водяной знак внизу гифки */
+  .vd-stage.is-spin .tag-on-photo { background: var(--accent); }
+  .vd-credit { margin: 14px 0 0; font-size: 12px; color: rgba(255,255,255,.6); }
+  .vd-credit a { color: rgba(255,255,255,.8); }
+  .btn-spin {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 6px;
+    padding: 14px 24px; border: 0; border-radius: 999px; cursor: pointer;
+    background: var(--accent); color: #fff; font: inherit; font-weight: 800; font-size: 18px;
+    box-shadow: 0 10px 30px var(--glow);
+    transition: transform .2s cubic-bezier(.3,1.6,.5,1);
+  }
+  .btn-spin:hover { transform: translateY(-3px) rotate(-2deg); }
+  .btn-spin:active { transform: scale(.96); }
+  .btn-spin:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  @keyframes shake {
+    25% { transform: translate(-4px, 2px) rotate(-1deg); }
+    75% { transform: translate(4px, -2px) rotate(1deg); }
+  }
+  @keyframes fly-in {
+    from { opacity: 0; transform: translateX(-60%) rotate(-14deg) scale(.8); }
+    to { opacity: 1; transform: none; }
+  }
+  .vd-stage.in { animation: fly-in .9s cubic-bezier(.2,1.3,.4,1) both; }
+
   /* ---------- Финал ---------- */
   .finale {
-    color: #fff; padding: 110px 0;
+    color: var(--on-dark); padding: 110px 0;
     background:
-      radial-gradient(700px 500px at 20% 40%, rgba(181,23,58,.35), transparent 65%),
+      radial-gradient(700px 500px at 20% 40%, var(--glow), transparent 65%),
       var(--dark);
   }
   .finale-photo { aspect-ratio: 3 / 4; box-shadow: 0 30px 70px rgba(0,0,0,.5); }
@@ -232,6 +462,36 @@
   .site-footer { padding: 36px 0 44px; font-size: 12px; line-height: 1.6; color: var(--muted); }
   .site-footer .sign { font-size: 14px; color: var(--ink); margin-bottom: 10px; }
 
+  /* ---------- Лихие 90-е: неон и золото ---------- */
+  :root:has(#t-90:checked) .center-head h2 { text-shadow: 0 0 22px rgba(255,31,142,.75), 0 0 2px #fff; }
+  :root:has(#t-90:checked) .hero h1 span {
+    background: linear-gradient(90deg, #ffd400, #ff1f8e, #ffd400); background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shine 4s linear infinite;
+  }
+  :root:has(#t-90:checked) .portrait::before { border: 5px dotted #ffd400; }
+  :root:has(#t-90:checked) .chips li { border-color: #ffd400; color: #ffd400; }
+  :root:has(#t-90:checked) .polaroid figcaption { color: #b0005c; }
+  :root:has(#t-90:checked) .logo span { color: #ffd400; }
+  @keyframes shine { to { background-position: -200% 0; } }
+
+  /* ---------- Плавное появление блоков ---------- */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .chapter .row {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 45%;
+      }
+      .vd-stage {
+        animation: fly-in linear both;
+        animation-timeline: view();
+        animation-range: entry 10% entry 70%;
+      }
+    }
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(48px); } }
+
   /* ---------- Адаптив ---------- */
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -241,24 +501,86 @@
     .row + .row { margin-top: 72px; }
     .media { max-width: 480px; }
     .polaroid { margin: 0 auto; }
+    .guard { right: 0; }
   }
   @media (max-width: 620px) {
     body { font-size: 16px; }
     .wrap { padding: 0 18px; }
+    .logo { display: none; }
+    .topnav-in { gap: 10px; }
+    .theme-switch label { padding: 4px 8px; }
     .chapter { padding: 72px 0; }
-    .hero { padding: 56px 0 64px; }
+    .hero { padding: 56px 0 104px; }
     .portrait, .portrait img { width: 220px; }
     .portrait img { height: 235px; }
     .now-job { grid-template-columns: 1fr; }
     .timeline li { grid-template-columns: 1fr; gap: 6px; }
     .polaroid { padding: 12px 12px 0; transform: rotate(1.5deg); }
     .finale { padding: 72px 0; }
+    .says .bubble { right: 8px; font-size: 17px; }
+    .dossier { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Без анимаций для тех, кто попросил ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+    .btn-spin { display: none; }
   }
 </style>
 </head>
 <body>
 
-<header class="hero">
+<input type="radio" name="theme" id="t-light" class="theme-radio" aria-label="Светлая тема" checked>
+<input type="radio" name="theme" id="t-dark" class="theme-radio" aria-label="Тёмная тема">
+<input type="radio" name="theme" id="t-90" class="theme-radio" aria-label="Тема «Лихие 90-е»">
+<script>
+  // Тема: из адреса (?theme=dark), из прошлого визита или по настройкам системы
+  (function () {
+    var key = 'persona-theme', saved = null;
+    try { saved = localStorage.getItem(key); } catch (e) {}
+    var asked = new URLSearchParams(location.search).get('theme');
+    var theme = asked || saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var radio = document.getElementById('t-' + theme);
+    if (radio) radio.checked = true;
+    document.querySelectorAll('.theme-radio').forEach(function (r) {
+      r.addEventListener('change', function () {
+        try { localStorage.setItem(key, r.id.slice(2)); } catch (e) {}
+      });
+    });
+  })();
+</script>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="goose" viewBox="0 0 64 64">
+    <path d="M24 50v9m-3 0h6M33 50v9m-3 0h6" stroke="#f08a1c" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M5 31c4 3 8 3 11 1 4-3 10-5 16-5 4 0 6 1 8 2l3-15c1-5 3-7 7-7s7 3 7 7c0 3-2 5-5 5-2 0-3 1-3 3l-1 13c-1 11-9 17-20 17C17 52 8 45 5 31z" fill="#fff" stroke="#2b2b2b" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M17 38c7-5 15-4 19 0-5 6-13 7-19 0z" fill="#e6e2e8" stroke="#2b2b2b" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M56 11l8 3-8 3z" fill="#f08a1c" stroke="#2b2b2b" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="51.5" cy="10.5" r="1.7" fill="#2b2b2b"/>
+  </symbol>
+</svg>
+
+<nav class="topnav" aria-label="Разделы страницы">
+  <div class="wrap topnav-in">
+    <a class="logo" href="#top">Persona<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">Биография</a></li>
+      <li><a href="#work">Работа</a></li>
+      <li><a href="#family">Дачушки</a></li>
+      <li><a href="#dossier">Досье</a></li>
+      <li><a href="#vandamme">Ван Дамм</a></li>
+      <li><a href="#howto">Как работать</a></li>
+    </ul>
+    <div class="theme-switch" role="group" aria-label="Тема оформления">
+      <label for="t-light" title="Светлая тема">☀️</label>
+      <label for="t-dark" title="Тёмная тема">🌙</label>
+      <label for="t-90" title="Тема «Лихие 90-е»">💰 90-е</label>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
       <p class="eyebrow">Persona · Виталий Шаклач · Минск</p>
@@ -273,6 +595,15 @@
     <figure class="portrait">
       <img src="мои%20фото/я.jpeg" alt="Виталий Шаклач, портрет">
     </figure>
+  </div>
+  <div class="geese" aria-hidden="true">
+    <div class="flock">
+      <svg class="goose"><use href="#goose"/></svg>
+      <svg class="goose"><use href="#goose"/></svg>
+      <svg class="goose"><use href="#goose"/></svg>
+      <svg class="goose"><use href="#goose"/></svg>
+      <span class="sign">Гуси на стендап →</span>
+    </div>
   </div>
 </header>
 
@@ -304,8 +635,9 @@
       </header>
 
       <div class="row flip">
-        <figure class="media">
+        <figure class="media says" tabindex="0">
           <div class="frame"><img src="мои%20фото/Попандопула.jpg" alt="Виталий в образе Попандопуло: тельняшка, красные галифе, бинокль, шляпа с пером, на фоне красного занавеса" style="object-position:48% 30%"></div>
+          <span class="bubble" aria-hidden="true">Тю! Шо вы говорите!<small>— в ответ на пятничную «маленькую правку»</small></span>
           <figcaption class="tag-on-photo">Один вечер · один образ</figcaption>
         </figure>
         <div class="text">
@@ -415,6 +747,10 @@
           <div class="frame"><img src="мои%20фото/кесси/кесси%20благородная.jpg" alt="Серая полосатая кошка Кесси гордо стоит на кухонном шкафу" style="object-position:45% 35%"></div>
           <div class="frame"><img src="мои%20фото/кесси/кесси%20грустит.jpg" alt="Кесси грустно лежит на стуле" style="object-position:55% 55%"></div>
           <div class="frame"><img src="мои%20фото/кесси/кесси%20крадет%20колбасу.jpg" alt="Кесси тянется лапой к колбасе на разделочной доске" style="object-position:55% 45%"></div>
+          <div class="guard" aria-hidden="true">
+            <span>Охраняет колбасу. Безуспешно</span>
+            <svg class="goose"><use href="#goose"/></svg>
+          </div>
         </div>
         <div class="text">
           <p class="big">Два года назад у меня появилась вторая дочка. По паспорту — кошка <b>Кесси</b>, по-домашнему — <b>Дачушка</b>.</p>
@@ -452,6 +788,76 @@
     </div>
   </section>
 
+  <!-- Досье -->
+  <section class="chapter" id="dossier">
+    <div class="wrap">
+      <header class="center-head">
+        <p class="kicker">Досье</p>
+        <h2 class="mid">Рассекречено</h2>
+      </header>
+      <p class="center-sub">Всё правда, а что не совсем правда, то хотя бы красиво</p>
+
+      <div class="dossier">
+        <details class="secret">
+          <summary><span>Секретный факт №1<small>про диплом</small></span></summary>
+          <p>Я <b>инженер-экономист по железнодорожному транспорту</b>. Кто бы мог подумать, что из этого получится IT-аналитик. Ну, вообще-то я и мог.</p>
+        </details>
+        <details class="secret">
+          <summary><span>Секретный факт №2<small>про джунов</small></span></summary>
+          <p>Администрировал <b>DB2, JBoss и MQSeries</b> ещё тогда, когда половина нынешних джунов ходила в детский сад.</p>
+        </details>
+        <details class="secret">
+          <summary><span>Секретный факт №3<small>про вас</small></span></summary>
+          <p><b>Вы, скорее всего, пользовались моей работой.</b> Я внедрял API БЖД и мобильное приложение БЖД, благодаря которым железнодорожные билеты в Беларуси можно купить, не выходя из дома.</p>
+        </details>
+        <details class="secret">
+          <summary><span>Секретный факт №4<small>про паровоз</small></span></summary>
+          <p>Пыхчу как паровоз. Это не метафора, это <b>профессиональная деформация</b> после 14 лет на железной дороге.</p>
+        </details>
+        <details class="secret">
+          <summary><span>Секретный факт №5<small>про языки</small></span></summary>
+          <p>Говорю на <b>трёх языках</b>: белорусском, русском и английском (английский — рабочий, для API-документации хватает). А ещё на языке бизнеса и на языке разработчиков, и это самое ценное.</p>
+        </details>
+        <details class="secret">
+          <summary><span>Секретный факт №6<small>про гостей</small></span></summary>
+          <p>Ван Дамм и гуси на этой странице — <b>не факты, а угар</b>. Всё остальное правда.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ван Дамм -->
+  <section class="chapter stage" id="vandamme">
+    <div class="wrap">
+      <header class="center-head">
+        <p class="kicker">Внезапный гость</p>
+        <h2 class="mid">Ван Дамм заглянул на интеграцию</h2>
+      </header>
+
+      <div class="row">
+        <figure class="media vd-stage" id="vd-stage">
+          <div class="frame vd-frame">
+            <picture>
+              <source media="(prefers-reduced-motion: reduce)" srcset="https://media.giphy.com/media/vETeJc11yHAas/giphy_s.gif">
+              <img id="vd-img" src="https://media.giphy.com/media/vETeJc11yHAas/giphy.gif" width="250" height="263" loading="lazy" alt="Жан-Клод Ван Дамм танцует в баре — сцена из фильма «Кикбоксёр»">
+            </picture>
+          </div>
+          <figcaption class="tag-on-photo" id="vd-tag">Танцпол</figcaption>
+        </figure>
+        <div class="text">
+          <p class="big">Зашёл проверить, выдержит ли интеграция шпагат между бизнесом и разработкой. Выдержала.</p>
+          <ul class="dots">
+            <li><b>Танцует</b>, пока тесты зелёные</li>
+            <li>Иногда без предупреждения делает <b>вертушку</b> — значит, пришла пятничная «маленькая правка»</li>
+            <li>Кесси не впечатлена: колбасы в вертушке не было</li>
+          </ul>
+          <button class="btn-spin" id="vd-btn" type="button">Ещё вертушку! 🦵</button>
+          <p class="vd-credit">Ж.-К. Ван Дамм, «Кикбоксёр» (1989) · танец via <a href="https://giphy.com/gifs/movie-dancing-jean-claude-van-damme-vETeJc11yHAas" target="_blank" rel="noopener">GIPHY</a> · вертушка via <a href="https://tenor.com/view/van-damme-kicks-gif-5744799271204924118" target="_blank" rel="noopener">Tenor</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Как со мной работать -->
   <section class="chapter" id="howto">
     <div class="wrap">
@@ -468,6 +874,13 @@
           <li>Не обещаю, что не скажу <b>«Тю!»</b>, но спецификация будет понятной, а команда будет знать, что делать.</li>
           <li>Только не звоните в выходные: у меня <b>Дачушки</b>, и они не любят, когда папа отвлекается.</li>
         </ul>
+      </div>
+      <div class="qa-goose">
+        <button type="button" aria-label="Гусь-тестировщик: Га-га! Нашёл баг">
+          <svg class="goose" aria-hidden="true"><use href="#goose"/></svg>
+          <span class="bubble" aria-hidden="true">Га-га! Нашёл баг 🐛</span>
+        </button>
+        <p class="muted">Это гусь-тестировщик. Щиплет за каждый баг до того, как его найдёт прод. Наведите или нажмите — проверьте сами.</p>
       </div>
     </div>
   </section>
@@ -490,9 +903,66 @@
 <footer class="site-footer">
   <div class="wrap">
     <div class="sign">Виталий Шаклач · Минск · bePaid</div>
-    Все фотографии — из личного архива Виталия Шаклача.
+    Все фотографии — из личного архива Виталия Шаклача. Гифки с Ван Даммом — via GIPHY и Tenor. Гуси нарисованы, ни один гусь не пострадал.
   </div>
 </footer>
+
+<script>
+  // Ван Дамм: танцует, а время от времени (раз в 8–20 секунд) сам делает вертушку
+  (function () {
+    var stage = document.getElementById('vd-stage');
+    var img = document.getElementById('vd-img');
+    var tag = document.getElementById('vd-tag');
+    var btn = document.getElementById('vd-btn');
+    var DANCE = img.getAttribute('src');
+    var SPIN = 'https://media.tenor.com/T7mgf_oXqtYAAAAC/van-damme-kicks.gif';
+    var SPIN_MS = 4440;
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var visible = false, spinning = false, timer = null, spinBlob = null, blobUrl = null;
+
+    // Вертушка грузится один раз; новый blob-адрес на каждый показ запускает гифку с первого кадра
+    function preload() {
+      if (spinBlob || !window.fetch) return;
+      fetch(SPIN).then(function (r) { return r.blob(); }).then(function (b) { spinBlob = b; }).catch(function () {});
+    }
+    function schedule() {
+      clearTimeout(timer);
+      if (reduce || !visible || spinning || document.hidden) return;
+      timer = setTimeout(spin, 8000 + Math.random() * 12000);
+    }
+    function spin() {
+      if (spinning) return;
+      clearTimeout(timer);
+      spinning = true;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+      blobUrl = spinBlob ? URL.createObjectURL(spinBlob) : null;
+      img.src = blobUrl || SPIN;
+      tag.textContent = 'ВЕРТУШКА!';
+      stage.classList.add('is-spin');
+      setTimeout(function () {
+        img.src = DANCE;
+        tag.textContent = 'Танцпол';
+        stage.classList.remove('is-spin');
+        spinning = false;
+        schedule();
+      }, SPIN_MS);
+    }
+
+    btn.addEventListener('click', spin);
+    document.addEventListener('visibilitychange', schedule);
+    if ('IntersectionObserver' in window) {
+      var fallbackFly = !(window.CSS && CSS.supports('animation-timeline: view()'));
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        if (visible) {
+          preload();
+          if (fallbackFly) stage.classList.add('in');
+        }
+        schedule();
+      }, { threshold: 0.3 }).observe(stage);
+    }
+  })();
+</script>
 
 </body>
 </html>
