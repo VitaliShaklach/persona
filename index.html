@@ -123,6 +123,13 @@
   :root:not(:has(#t-dark:checked)):not(:has(#t-90:checked)) label[for="t-light"],
   :root:has(#t-dark:checked) label[for="t-dark"],
   :root:has(#t-90:checked) label[for="t-90"] { background: var(--card); color: var(--accent); box-shadow: 0 2px 8px var(--shadow); }
+  .sound-btn {
+    flex: none; padding: 5px 10px; border: 0; border-radius: 999px; cursor: pointer;
+    background: var(--accent-soft); font-size: 14px; line-height: 1.2;
+    transition: transform .2s;
+  }
+  .sound-btn:hover { transform: translateY(-1px) rotate(-6deg); }
+  .sound-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   :root:has(#t-light:focus-visible) label[for="t-light"],
   :root:has(#t-dark:focus-visible) label[for="t-dark"],
   :root:has(#t-90:focus-visible) label[for="t-90"] { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -256,7 +263,13 @@
     margin: -44px auto 64px; text-align: center;
     font-size: clamp(18px, 2.2vw, 22px); color: var(--muted);
   }
-  .row + .center-head { margin-top: 120px; }
+  .row + .center-head, .duo + .center-head { margin-top: 120px; }
+
+  /* Два образа рядом: колонки «лесенкой» */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .duo-item:nth-child(2) { margin-top: 96px; }
+  .duo .media { margin-bottom: 28px; }
+  .duo h3 { font-size: clamp(24px, 2.6vw, 32px); line-height: 1.15; color: var(--accent); margin-bottom: 14px; }
   .howto-list { max-width: 760px; margin: 0 auto; }
   .promo {
     max-width: 820px; margin: -24px auto 56px; padding: 32px 36px;
@@ -376,7 +389,7 @@
   .qa-goose p { margin: 0; font-size: 15px; }
 
   /* ---------- Досье ---------- */
-  .dossier { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .dossier { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
   .secret {
     position: relative; overflow: hidden;
     background: var(--card); border: 1px dashed var(--accent); border-radius: 16px;
@@ -462,6 +475,26 @@
   .site-footer { padding: 36px 0 44px; font-size: 12px; line-height: 1.6; color: var(--muted); }
   .site-footer .sign { font-size: 14px; color: var(--ink); margin-bottom: 10px; }
 
+  /* ---------- Гуси в небе: пролетают и иногда каркают в экран ---------- */
+  .sky-goose, .goose-face {
+    position: fixed; left: 0; top: 0; z-index: 60;
+    pointer-events: none; will-change: transform;
+  }
+  .sky-goose { width: 110px; }
+  .sky-goose svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .sky-goose .wing { transform-box: fill-box; transform-origin: 50% 100%; animation: flap .32s ease-in-out infinite alternate; }
+  @keyframes flap { to { transform: scaleY(-.75); } }
+  .goose-face { transform-origin: 0 0; }
+  .goose-face svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 20px 40px rgba(0,0,0,.35)); }
+  .goose-face .caw {
+    position: absolute; right: -6%; top: -4%;
+    padding: .2em .45em; border-radius: .5em .5em .5em .1em;
+    background: var(--accent); color: #fff;
+    font-weight: 900; font-size: clamp(28px, 7vmin, 72px); line-height: 1; letter-spacing: .02em;
+    transform: rotate(8deg);
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  }
+
   /* ---------- Лихие 90-е: неон и золото ---------- */
   :root:has(#t-90:checked) .center-head h2 { text-shadow: 0 0 22px rgba(255,31,142,.75), 0 0 2px #fff; }
   :root:has(#t-90:checked) .hero h1 span {
@@ -478,7 +511,7 @@
   /* ---------- Плавное появление блоков ---------- */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .chapter .row {
+      .chapter .row, .duo-item {
         animation: rise linear both;
         animation-timeline: view();
         animation-range: entry 0% entry 45%;
@@ -500,6 +533,8 @@
     .row.flip .media { order: 0; }
     .row + .row { margin-top: 72px; }
     .media { max-width: 480px; }
+    .duo { grid-template-columns: 1fr; gap: 72px; }
+    .duo-item:nth-child(2) { margin-top: 0; }
     .polaroid { margin: 0 auto; }
     .guard { right: 0; }
   }
@@ -525,7 +560,7 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
     html { scroll-behavior: auto; }
-    .btn-spin { display: none; }
+    .btn-spin, .sound-btn { display: none; }
   }
 </style>
 </head>
@@ -577,6 +612,7 @@
       <label for="t-dark" title="Тёмная тема">🌙</label>
       <label for="t-90" title="Тема «Лихие 90-е»">💰 90-е</label>
     </div>
+    <button class="sound-btn" id="sound-btn" type="button" aria-pressed="true" title="Звук гусей включён">🔊</button>
   </div>
 </nav>
 
@@ -589,6 +625,7 @@
       <ul class="chips">
         <li>Системный анализ</li>
         <li>Интеграции и API</li>
+        <li>ТЗ для информационных систем</li>
         <li>Папа Дачушек</li>
       </ul>
     </div>
@@ -614,40 +651,35 @@
     <div class="wrap">
 
       <header class="center-head">
-        <p class="kicker">Глава первая</p>
-        <h2 class="mid">Держал пол авторынка в&nbsp;90-е</h2>
+        <p class="kicker">Глава первая · корпоративы</p>
+        <h2 class="mid">Два корпоратива — два образа</h2>
       </header>
+      <p class="center-sub">Дважды велели прийти в костюмах — дважды пришлось соответствовать. Легенды остались навсегда</p>
 
-      <div class="row">
-        <figure class="media">
-          <div class="frame"><img src="мои%20фото/Новый%20русский%20в%2090е.png" alt="Виталий в малиновом пиджаке, с золотой цепью, в тёмных очках и казаках" style="object-position:50% 22%"></div>
-          <figcaption class="tag-on-photo">Лихие 90-е</figcaption>
-        </figure>
-        <div class="text">
+      <div class="duo">
+        <div class="duo-item">
+          <figure class="media">
+            <div class="frame"><img src="мои%20фото/Новый%20русский%20в%2090е.png" alt="Виталий в малиновом пиджаке, с золотой цепью, в тёмных очках и казаках" style="object-position:50% 22%"></div>
+            <figcaption class="tag-on-photo">Корпоратив · лихие 90-е</figcaption>
+          </figure>
+          <h3>Держал пол авторынка в&nbsp;90-е</h3>
           <p class="big">Малиновый пиджак с золотыми пуговицами, цепь толщиной в палец, барсетка под мышкой, тёмные очки и казаки. Переговоры, логистика, управление рисками — всё по-взрослому.</p>
           <p class="muted">Пиджак и цепь живут в гардеробе до сих пор и достаются по особым случаям — напомнить коллегам, кто тут держал пол авторынка. Казаки — не те, что с шашкой, а сапоги. Обувь человека, который знает, чего хочет.</p>
         </div>
-      </div>
-
-      <header class="center-head">
-        <p class="kicker">Глава вторая</p>
-        <h2 class="mid">Попандопуло — ровно один раз</h2>
-      </header>
-
-      <div class="row flip">
-        <figure class="media says" tabindex="0">
-          <div class="frame"><img src="мои%20фото/Попандопула.jpg" alt="Виталий в образе Попандопуло: тельняшка, красные галифе, бинокль, шляпа с пером, на фоне красного занавеса" style="object-position:48% 30%"></div>
-          <span class="bubble" aria-hidden="true">Тю! Шо вы говорите!<small>— в ответ на пятничную «маленькую правку»</small></span>
-          <figcaption class="tag-on-photo">Один вечер · один образ</figcaption>
-        </figure>
-        <div class="text">
-          <p class="big">Был вечер, где всем велели прийти в костюмах. Я пришёл Попандопуло из «Свадьбы в Малиновке»: тельняшка, красные галифе, бинокль, шляпа с пером и усики.</p>
+        <div class="duo-item">
+          <figure class="media says" tabindex="0">
+            <div class="frame"><img src="мои%20фото/Попандопула.jpg" alt="Виталий в образе Попандопуло: тельняшка, красные галифе, бинокль, шляпа с пером, на фоне красного занавеса" style="object-position:48% 30%"></div>
+            <span class="bubble" aria-hidden="true">Тю! Шо вы говорите!<small>— в ответ на пятничную «маленькую правку»</small></span>
+            <figcaption class="tag-on-photo">Корпоратив · один образ</figcaption>
+          </figure>
+          <h3>Попандопуло — ровно один раз</h3>
+          <p class="big">Был корпоратив, где всем велели прийти в костюмах. Я пришёл Попандопуло из «Свадьбы в Малиновке»: тельняшка, красные галифе, бинокль, шляпа с пером и усики.</p>
           <p class="muted">Сыграл один раз, но образ прилип. «Тю! Шо вы говорите!» до сих пор вырывается само — особенно когда в пятницу вечером приходит «маленькая правка».</p>
         </div>
       </div>
 
       <header class="center-head">
-        <p class="kicker">Глава третья</p>
+        <p class="kicker">Глава вторая</p>
         <h2 class="mid">Пыхчу как паровоз в&nbsp;IT</h2>
       </header>
 
@@ -694,7 +726,7 @@
         </article>
         <article class="card">
           <h3>Команда и требования</h3>
-          <p class="muted">Планирую и контролирую работу команды, ввожу в курс дела новичков, пишу требования к функциям и сервисам. До тимлидства — полтора года системным аналитиком.</p>
+          <p class="muted">Планирую и контролирую работу команды, ввожу в курс дела новичков, пишу требования к функциям и сервисам и <b>ТЗ для информационных систем</b>. До тимлидства — полтора года системным аналитиком.</p>
         </article>
       </div>
       <ul class="timeline">
@@ -712,7 +744,7 @@
         </li>
       </ul>
       <ul class="skills">
-        <li>Бизнес-анализ</li><li>Системный анализ</li><li>Интеграции · API</li><li>SQL</li><li>ETL</li><li>Figma</li><li>Внедрение ПО</li><li>Работа с подрядчиками</li>
+        <li>Бизнес-анализ</li><li>Системный анализ</li><li>Интеграции · API</li><li>ТЗ для информационных систем</li><li>SQL</li><li>ETL</li><li>Figma</li><li>Внедрение ПО</li><li>Работа с подрядчиками</li>
       </ul>
     </div>
   </section>
@@ -819,7 +851,15 @@
           <p>Говорю на <b>трёх языках</b>: белорусском, русском и английском (английский — рабочий, для API-документации хватает). А ещё на языке бизнеса и на языке разработчиков, и это самое ценное.</p>
         </details>
         <details class="secret">
-          <summary><span>Секретный факт №6<small>про гостей</small></span></summary>
+          <summary><span>Секретный факт №6<small>про гитару</small></span></summary>
+          <p>Окончил <b>музыкальную школу по классу гитары</b> и даже <b>два месяца преподавал</b>. Так что «настроить» могу не только интеграцию.</p>
+        </details>
+        <details class="secret">
+          <summary><span>Секретный факт №7<small>про авторынок</small></span></summary>
+          <p>Пол авторынка я держал <b>ровно один вечер — на корпоративе</b>. Но держал уверенно, и пиджак до сих пор в строю.</p>
+        </details>
+        <details class="secret">
+          <summary><span>Секретный факт №8<small>про гостей</small></span></summary>
           <p>Ван Дамм и гуси на этой странице — <b>не факты, а угар</b>. Всё остальное правда.</p>
         </details>
       </div>
@@ -961,6 +1001,192 @@
         schedule();
       }, { threshold: 0.3 }).observe(stage);
     }
+  })();
+
+  // Гуси в небе: раз в 12–30 секунд кто-то пролетает, а каждый второй
+  // разворачивается мордой в экран, вырастает на четверть экрана и орёт: кар, хрю, гав или мяу
+  (function () {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || !Element.prototype.animate) return;
+
+    var FLY = '<svg viewBox="0 0 120 70" aria-hidden="true">' +
+      '<path d="M44 50l-9 6m15-6l-7 7" stroke="#f08a1c" stroke-width="3" stroke-linecap="round"/>' +
+      '<path d="M26 38l-13-5 4 11z" fill="#e6e2e8" stroke="#2b2b2b" stroke-width="2" stroke-linejoin="round"/>' +
+      '<path d="M24 40c0-8 14-13 31-13 12 0 21 2 27 5l15-5c4-2 9-1 11 3 1 3-1 6-5 6l-17 6c-6 7-17 11-31 11-17 0-31-5-31-13z" fill="#fff" stroke="#2b2b2b" stroke-width="2" stroke-linejoin="round"/>' +
+      '<path d="M107 27l11 3-11 3z" fill="#f08a1c" stroke="#2b2b2b" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<circle cx="103" cy="28" r="1.7" fill="#2b2b2b"/>' +
+      '<path class="wing" d="M42 34C46 8 66 2 76 6 70 18 64 28 62 34z" fill="#e6e2e8" stroke="#2b2b2b" stroke-width="2" stroke-linejoin="round"/>' +
+      '</svg>';
+    var FACE = '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+      '<path d="M37 100c0-18 2-30 5-38h16c3 8 5 20 5 38z" fill="#fff" stroke="#2b2b2b" stroke-width="2"/>' +
+      '<ellipse cx="50" cy="40" rx="27" ry="25" fill="#fff" stroke="#2b2b2b" stroke-width="2"/>' +
+      '<path d="M31 24l12 6M69 24l-12 6" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>' +
+      '<circle cx="39" cy="35" r="5" fill="#2b2b2b"/><circle cx="61" cy="35" r="5" fill="#2b2b2b"/>' +
+      '<circle cx="40.5" cy="33.5" r="1.6" fill="#fff"/><circle cx="62.5" cy="33.5" r="1.6" fill="#fff"/>' +
+      '<ellipse cx="50" cy="56" rx="11" ry="7" fill="#5a1020"/>' +
+      '<path d="M45 59q5 4 10 0" fill="#ff7a93"/>' +
+      '<path d="M35 47q15-8 30 0-6 6-15 6t-15-6z" fill="#f08a1c" stroke="#2b2b2b" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<path d="M40 61q10-4 20 0-4 9-10 9t-10-9z" fill="#f08a1c" stroke="#2b2b2b" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '</svg><span class="caw">КАР!</span>';
+    var timer = null, flights = 0, lastWord = '';
+
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    // ---- Звук: синтезируется прямо в браузере, без файлов ----
+    // Браузер разрешает звук только после первого клика или нажатия клавиши на странице
+    var AC = window.AudioContext || window.webkitAudioContext, ac = null;
+    var soundOn = true;
+    try { soundOn = localStorage.getItem('persona-sound') !== 'off'; } catch (e) {}
+    var sbtn = document.getElementById('sound-btn');
+    function paintBtn() {
+      sbtn.textContent = soundOn ? '🔊' : '🔇';
+      sbtn.setAttribute('aria-pressed', String(soundOn));
+      sbtn.title = soundOn ? 'Звук гусей включён' : 'Звук гусей выключен';
+    }
+    function unlock() {
+      if (!AC) return;
+      if (!ac) ac = new AC();
+      if (ac.state === 'suspended') ac.resume();
+    }
+    ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) {
+      document.addEventListener(ev, function () { if (soundOn) unlock(); }, { passive: true });
+    });
+    sbtn.addEventListener('click', function () {
+      soundOn = !soundOn;
+      try { localStorage.setItem('persona-sound', soundOn ? 'on' : 'off'); } catch (e) {}
+      paintBtn();
+      if (soundOn) { unlock(); setTimeout(function () { play(pick()); }, 60); }
+    });
+    paintBtn();
+
+    function ramp(param, t, pts) {
+      param.setValueAtTime(pts[0][1], t + pts[0][0]);
+      for (var i = 1; i < pts.length; i++) param.linearRampToValueAtTime(pts[i][1], t + pts[i][0]);
+    }
+    // Один «голос»: осциллятор (+ шум) через фильтр с огибающей громкости
+    function tone(out, t, o) {
+      var g = ac.createGain(), flt = ac.createBiquadFilter(), osc = ac.createOscillator(), end = t + o.d + 0.05;
+      flt.type = o.ft; flt.Q.value = o.q; ramp(flt.frequency, t, o.ff);
+      osc.type = o.type || 'sawtooth'; ramp(osc.frequency, t, o.f);
+      if (o.lfo) {
+        var l = ac.createOscillator(), lg = ac.createGain();
+        l.frequency.value = o.lfo[0]; lg.gain.value = o.lfo[1];
+        l.connect(lg); lg.connect(osc.frequency); l.start(t); l.stop(end);
+      }
+      if (o.n) {
+        var len = Math.ceil(ac.sampleRate * (o.d + 0.05)), buf = ac.createBuffer(1, len, ac.sampleRate), ch = buf.getChannelData(0);
+        for (var i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
+        var ns = ac.createBufferSource(), ng = ac.createGain();
+        ns.buffer = buf; ng.gain.value = o.n; ns.connect(ng); ng.connect(flt); ns.start(t); ns.stop(end);
+      }
+      var v = o.v || 1, hold = Math.max(0, o.d - o.a - o.r);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(v, t + o.a);
+      g.gain.setValueAtTime(v, t + o.a + hold);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + o.d);
+      osc.connect(flt); flt.connect(g); g.connect(out);
+      osc.start(t); osc.stop(end);
+    }
+    var SOUNDS = {
+      'КАР!': function (out, t) {
+        [0, 0.5].forEach(function (k) {
+          tone(out, t + k, { f: [[0, 620], [0.08, 700], [0.42, 430]], ft: 'bandpass', ff: [[0, 1500], [0.42, 1100]], q: 1.2, d: 0.42, a: 0.02, r: 0.15, n: 0.6, lfo: [38, 60] });
+          tone(out, t + k, { type: 'square', f: [[0, 930], [0.08, 1050], [0.42, 640]], ft: 'bandpass', ff: [[0, 1800], [0.42, 1300]], q: 1.5, d: 0.42, a: 0.02, r: 0.15, v: 0.35 });
+        });
+      },
+      'ХРЮ!': function (out, t) {
+        [0, 0.26].forEach(function (k) {
+          tone(out, t + k, { f: [[0, 150], [0.2, 95]], ft: 'lowpass', ff: [[0, 1000], [0.2, 450]], q: 6, d: 0.2, a: 0.01, r: 0.07, n: 0.5, lfo: [24, 45], v: 1.3 });
+        });
+      },
+      'ГАВ!': function (out, t) {
+        [0, 0.3].forEach(function (k) {
+          tone(out, t + k, { f: [[0, 420], [0.05, 540], [0.2, 170]], ft: 'lowpass', ff: [[0, 2400], [0.2, 500]], q: 3, d: 0.2, a: 0.008, r: 0.1, n: 0.35, v: 1.3 });
+        });
+      },
+      'МЯУ!': function (out, t) {
+        tone(out, t, { f: [[0, 520], [0.25, 820], [0.7, 470]], ft: 'bandpass', ff: [[0, 700], [0.25, 1800], [0.7, 900]], q: 4, d: 0.72, a: 0.08, r: 0.25, lfo: [6, 14], v: 1.8 });
+      }
+    };
+    function pick() {
+      var words = Object.keys(SOUNDS).filter(function (w) { return w !== lastWord; });
+      return (lastWord = words[Math.floor(Math.random() * words.length)]);
+    }
+    function play(word) {
+      if (!soundOn || !ac || ac.state !== 'running') return;
+      var out = ac.createGain(), comp = ac.createDynamicsCompressor();
+      out.gain.value = 0.35; out.connect(comp); comp.connect(ac.destination);
+      SOUNDS[word](out, ac.currentTime + 0.02);
+    }
+    function schedule(min, max) {
+      clearTimeout(timer);
+      timer = setTimeout(fly, rnd(min || 12000, max || 30000));
+    }
+
+    function fly() {
+      if (document.hidden) return schedule();
+      var W = innerWidth, H = innerHeight;
+      var dir = Math.random() < 0.5 ? 1 : -1;               // 1 — слева направо
+      var y = rnd(H * 0.12, H * 0.7);
+      var x0 = dir > 0 ? -140 : W + 30, x1 = dir > 0 ? W + 30 : -140;
+      var flip = dir > 0 ? '' : ' scaleX(-1)';
+      var g = document.createElement('div');
+      g.className = 'sky-goose';
+      g.setAttribute('aria-hidden', 'true');
+      g.innerHTML = FLY;
+      document.body.appendChild(g);
+      function at(x, dy) { return { transform: 'translate(' + x + 'px,' + (y + dy) + 'px)' + flip }; }
+      var speed = rnd(0.12, 0.2) * W / 1000 + 0.15;          // пикселей в миллисекунду
+      var done = function () { g.remove(); schedule(); };
+
+      flights++;
+      var caw = forceCaw || flights % 2 === 0;                // каждый второй гусь орёт в экран
+      forceCaw = false;
+      if (!caw) {
+        g.animate([at(x0, 0), at((x0 + x1) / 2, -40), at(x1, 10)],
+          { duration: Math.abs(x1 - x0) / speed, easing: 'linear' }).onfinish = done;
+        return;
+      }
+
+      // Каркающий гусь: долетает до точки, разворачивается к нам и растёт
+      var xs = x0 + (x1 - x0) * rnd(0.35, 0.6);
+      g.animate([at(x0, 0), at(xs, -20)], { duration: Math.abs(xs - x0) / speed, easing: 'ease-out', fill: 'forwards' })
+        .onfinish = function () {
+          g.style.visibility = 'hidden';
+          var S = Math.min(W, H) * 0.5;                       // примерно четверть экрана
+          var f = document.createElement('div');
+          f.className = 'goose-face';
+          f.setAttribute('aria-hidden', 'true');
+          f.style.width = f.style.height = S + 'px';
+          f.innerHTML = FACE;
+          var word = pick();
+          f.querySelector('.caw').textContent = word;
+          document.body.appendChild(f);
+          setTimeout(function () { play(word); }, 380);
+          var small = 'translate(' + (xs + 30) + 'px,' + (y - 20) + 'px) scale(' + (60 / S) + ')';
+          var cx = (W - S) / 2, cy = (H - S) / 2;
+          var big = function (r, k) { return 'translate(' + cx + 'px,' + cy + 'px) rotate(' + r + 'deg) scale(' + (k || 1) + ')'; };
+          f.animate([
+            { transform: small, offset: 0 },
+            { transform: big(0, 1.08), offset: 0.18 },
+            { transform: big(0), offset: 0.24 },
+            { transform: big(-4), offset: 0.34 },
+            { transform: big(4), offset: 0.44 },
+            { transform: big(-3), offset: 0.54 },
+            { transform: big(0), offset: 0.8 },
+            { transform: small, offset: 1 }
+          ], { duration: 2400, easing: 'ease-in-out' }).onfinish = function () {
+            f.remove();
+            g.style.visibility = '';
+            g.animate([at(xs, -20), at(x1, 10)], { duration: Math.abs(x1 - xs) / speed, easing: 'ease-in' }).onfinish = done;
+          };
+        };
+    }
+
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) schedule(4000, 10000); });
+    // ?goose=1 — гусь сразу, ?goose=caw — сразу каркающий (для проверки)
+    var first = new URLSearchParams(location.search).get('goose');
+    var forceCaw = first === 'caw';
+    schedule(first ? 500 : 6000, first ? 600 : 14000);
   })();
 </script>
 
